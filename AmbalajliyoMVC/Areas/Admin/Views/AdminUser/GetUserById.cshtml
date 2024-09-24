@@ -1,0 +1,75 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model AmbalajliyoMVC.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Personel Detayları";
+    var roles = ViewBag.Roles as List<RoleViewModel> ?? new List<RoleViewModel>();
+    var roleName = roles.FirstOrDefault(r => r.Id == Model.AmbalajliyoRoleId)?.Name;
+
+}
+<div class="container">
+    <div class="page-inner">
+
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Personeller</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href=" @Url.Action("GetAllUsers")">Personel Listesi</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Personel Detayları</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Personel Detayları</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <input type="hidden" asp-for="Id" value="@Model.Id" />
+
+                                <dt class="col-sm-3 font-weight-bold">Kullanıcı Adı:</dt>
+                                <dd class="col-sm-9">@Model.UserName</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">E-posta:</dt>
+                                <dd class="col-sm-9">@Model.Email</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Ad:</dt>
+                                <dd class="col-sm-9">@Model.Name</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Soyad:</dt>
+                                <dd class="col-sm-9">@Model.Surname</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Rol:</dt>
+                                <dd class="col-sm-9">@roleName</dd>
+                            </dl>
+                        </div>
+                        <div class="card-footer text-end">
+
+                            <a href="@Url.Action("GetAllUsers")" class="btn btn-outline-danger">Geri Dön</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,162 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model List<UserViewModel>
+
+@{
+    var userAdmin = Context.Session.GetString("UserAdmin");
+
+    var roles = ViewBag.Roles as List<RoleViewModel> ?? new List<RoleViewModel>();
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+@if(userAdmin!=null)
+{
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Personeller</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Personeller</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Personel Listesi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <p>
+                <a asp-action="Register" class="btn btn-outline-primary btn-lg me-2">Yeni Personel Ekle</a>
+            </p>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Roller Listesi</div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                                <tr>
+                                    <th scope="col">Personel Ad</th>
+                                    <th scope="col">Personel Soyad</th>
+                                    <th scope="col">Kullanıcı Adı</th>
+                                    <th scope="col">Personel Rol</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td>@user.Name</td>
+                                        <td>@user.Surname</td>
+                                        <td>@user.UserName</td>
+                                        <td>@roles.FirstOrDefault(r => r.Id == user.AmbalajliyoRoleId)?.Name</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm me-2"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editRoleModal"
+                                                    data-user-id="@user.Id"
+                                                    data-role-id="@user.AmbalajliyoRoleId">
+                                                Rol Düzenle
+                                            </button>
+                                            <form asp-action="DeleteUser" method="post" style="display:inline">
+                                                <input type="hidden" name="userId" id="userId" value="@user.Id" />
+                                                <button type="submit" class="btn btn-danger me-2">Personel Sil</button>
+                                            </form>
+                                            <a asp-action="GetUserById" asp-controller="User" class="btn btn-success me-2" asp-route-id="@user.Id">Personel Detay</a>
+                                        </td>
+                                    </tr>
+                                }
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rol Düzenleme Modal -->
+<div class="modal fade" id="editRoleModal" tabindex="-1" role="dialog" aria-labelledby="editRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editRoleModalLabel">Rol Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="UpdateUserRole">
+                    <input type="hidden" name="userId" id="userId" />
+                    <div class="form-group">
+                        <label for="role">Rol Adı</label>
+                        <select class="form-control" name="roleId" id="roleId">
+                            @foreach (var role in roles)
+                            {
+                                <option value="@role.Id">@role.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var editRoleModal = document.getElementById('editRoleModal');
+    editRoleModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var userId = button.getAttribute('data-user-id');
+        var userRoleId = button.getAttribute('data-role-id');
+
+        var modalUserIdInput = editRoleModal.querySelector('#userId');
+        var modalRoleIdSelect = editRoleModal.querySelector('#roleId');
+
+        modalUserIdInput.value = userId;
+        modalRoleIdSelect.value = userRoleId;
+    });
+</script>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var deleteButtons = document.querySelectorAll('form[action*="/DeleteUser"] button[type="submit"]');
+            deleteButtons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the form from submitting immediately
+                    var form = button.closest('form'); // Find the closest form
+                    var row = form.closest('tr'); // Find the closest row
+                    var userName = row.querySelector('td:first-child').innerText; // Get the first name from the first cell
+                    var userSurname = row.querySelector('td:nth-child(2)').innerText; // Get the last name from the second cell
+
+                    Swal.fire({
+                        title: 'Emin misiniz?',
+                        text: `"${userName} ${userSurname}" isimli kişiyi silmek istediğinize emin misiniz?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Evet, sil!',
+                        cancelButtonText: 'İptal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Submit the form if confirmed
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}
+}

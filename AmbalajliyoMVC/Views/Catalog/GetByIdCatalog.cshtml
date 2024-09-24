@@ -1,0 +1,16 @@
+﻿@model AmbalajliyoMVC.ViewModels.CatalogViewModel
+
+<div class="container">
+    <h3>Katalog Detayları</h3>
+    <div>
+        @if (!string.IsNullOrEmpty(Model.PdfName))
+        {
+            <p><strong> Dosya:</strong></p>
+            <a href="/Catalog.Pdf/@Model.PdfName" target="_blank" class="btn btn-primary">Dosyayı Aç</a>
+        }
+        else
+        {
+            <p>Dosya mevcut değil.</p>
+        }
+    </div>    
+</div>

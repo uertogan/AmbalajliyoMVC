@@ -1,0 +1,97 @@
+﻿@using AmbalajliyoMVC.Helper
+@using AmbalajliyoMVC.ViewModels
+@model PostViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Title - Haber Detayı</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        #post {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .post-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .post-image {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: bisque;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+            .back-button:hover {
+                background-color: burlywood;
+                color: black;
+            }
+
+        /* Footer styles */
+        .footer {
+            background-color: whitesmoke;
+            color: black;
+            text-align: center;
+            padding: 5px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="post">
+        <!-- Post Title -->
+        <h1 class="post-title">@Model.Title</h1>
+
+        <!-- Post Image -->
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <img src="~/Images.Posts/@Model.Image" alt="Haber Resmi" class="post-image" />
+        }
+
+        <!-- Post Content -->
+        <div class="post-content">
+            @Model.Info
+        </div>
+
+        <!-- Back Button -->
+        <a href="@Url.Action("Index", "Home")" class="back-button">Geri Dön</a>
+    </div>
+</body>
+</html>

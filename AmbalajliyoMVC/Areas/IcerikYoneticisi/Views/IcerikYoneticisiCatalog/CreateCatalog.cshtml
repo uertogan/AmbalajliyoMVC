@@ -1,0 +1,109 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model CatalogViewModel
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Katalog</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllProduct")">Katalog Listesi</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Katalog Ekle</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+               
+                <form id="catalogForm" asp-action="CreateCatalog" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label asp-for="PdfUrl" class="control-label">Dosya Yükle</label>
+                        <input asp-for="PdfUrl" type="file" class="form-control" />
+                        <span asp-validation-for="PdfUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Oluştur" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="GetAllCatalog">Listeye geri dön</a>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            var catalogForm = document.getElementById('catalogForm'); // Formu seç
+            if (catalogForm) {
+                catalogForm.addEventListener('submit', function (event) {
+                    event.preventDefault(); // Formun hemen gönderilmesini engelle
+
+                    var isValid = true;
+                    var formData = new FormData(catalogForm);
+
+                    // Form verilerini kontrol et
+                    if (!formData.has('PdfUrl') || formData.get('PdfUrl').size === 0) {
+                        isValid = false;
+                    }
+
+                    if (!isValid) {
+                        // Hatalı form alanlarını göster
+                        Swal.fire({
+                            title: 'Hata!',
+                            text: 'Lütfen geçerli bir dosya yüklediğinizden emin olun.',
+                            icon: 'error',
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'Tamam'
+                        });
+                     
+                    }
+                    else if (errorMessage != null) {
+                            Swal.fire({
+                                title: 'Hata!',
+                                text: "Dosya adı zaten mevcuttur!",
+                                icon: 'error',
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Tamam'
+                            });
+                    }
+                    else {
+                        // SweetAlert2 popup'ını göster
+                        Swal.fire({
+                            title: 'Başarı!',
+                            text: 'Dosya başarıyla yüklendi. Katalog oluşturulacak.',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Ana Sayfaya Dön'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                catalogForm.submit(); // Formu gönder
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+}
+
+

@@ -1,0 +1,461 @@
+﻿@using AmbalajliyoMVC.Helper
+@using AmbalajliyoMVC.ViewModels
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+    var posts = ViewBag.Posts as List<PostViewModel>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/slider.js" type="text/javascript"></script>
+    <style>
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 60vh; /* Adjust based on your needs */
+            overflow: hidden;
+            margin-top: 20px; /* Üstten boşluk ekleyin */
+        }
+
+        .slider {
+            display: flex;
+            height: calc(100% - 60px); /* Adjust based on text height */
+            width: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            flex: 1 0 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        #slide1 {
+            background-image: url('Image.Slider/r1.jpg');
+        }
+
+        #slide2 {
+            background-image: url('Image.Slider/r2.jpg');
+        }
+
+        #slide3 {
+            background-image: url('Image.Slider/r3.jpg');
+        }
+
+        #slide4 {
+            background-image: url('Image.Slider/r4.jpg');
+        }
+
+        .slider-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transform: translateY(-50%);
+        }
+
+        .slider-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 2rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+            .slider-button:hover {
+                background-color: rgba(0, 0, 0, 0.7);
+                transform: scale(1.1);
+            }
+
+        .slider-text-container {
+            position: absolute;
+            bottom: 20px; /* Adjust to ensure the text is above the dots */
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .slider-text {
+            color: beige; /* Yazı rengi */
+            padding: 10px;
+            background: rgba(139, 69, 19, 0.5); /* Yarı şeffaf kahverengi arka plan rengi */
+            border-radius: 5px; /* Optional: rounded corners for text background */
+        }
+
+        .dots-container {
+            position: absolute;
+            bottom: 20px; /* Adjust as needed */
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: beige;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .dot.active {
+                background-color: #717171;
+            }
+
+        .content {
+            position: absolute;
+            bottom: 20px; /* Adjust this value to position text at the bottom */
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: beige; /* Yazı rengi */
+            background-color: rgba(139, 69, 19, 0.5); /* Yarı şeffaf kahverengi arka plan rengi */
+            padding: 10px; /* Optional: padding around the text */
+            border-radius: 5px; /* Optional: rounded corners for the text background */
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.5rem;
+        }
+
+        /* Footer styles */
+        .w3-ul img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+            .card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            }
+
+        .card-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .posts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 100px 0; /* Bu kısmı ayarlayarak sayfanın alt kısmında yeterli boşluk bırakabilirsiniz */
+        }
+
+        .post-card {
+            flex: 1 1 calc(33.333% - 20px); /* 3 cards per row, accounting for gaps */
+            max-width: calc(33.333% - 20px);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .post-card img {
+                max-height: 200px;
+                object-fit: cover;
+                width: 100%;
+            }
+
+        .hover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+        }
+
+        .post-card:hover .hover-overlay {
+            opacity: 1;
+        }
+
+        .overlay-button {
+            background-color: transparent; /* Arka plan hala şeffaf */
+            border: 3px solid #ccc; /* Kenar çizgisini kalınlaştırdık */
+            padding: 15px 30px; /* Butonu daha geniş ve büyük yaptık */
+            font-size: 18px; /* Yazı boyutunu artırdık */
+            color: #333; /* Yazı rengi belirgin */
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease; /* Yumuşak geçiş efekti */
+        }
+
+            .overlay-button:hover {
+                border-color: black; /* Hover durumunda kenar rengi mavi */
+                color: black; /* Hover durumunda yazı rengi mavi */
+                transform: scale(1.05); /* Hover durumunda hafif bir büyütme efekti */
+            }
+
+        /* Header and horizontal rule styles */
+        .header-section {
+            text-align: center;
+            margin: 40px 0; /* Adds vertical space around the section */
+        }
+
+            .header-section h2 {
+                font-size: 2rem;
+                color: #333;
+                font-weight: bold;
+                margin: 0;
+                padding: 0;
+                position: relative;
+                display: inline-block;
+                border-bottom: 3px solid brown; /* Accent color for underline */
+            }
+
+            .header-section hr {
+                border: 0;
+                height: 1px;
+                background: brown; /* Accent color for the line */
+                margin: 10px auto; /* Adds space around the line */
+                width: 50%; /* Adjust width as needed */
+            }
+
+        /* Footer styles */
+        .footer {
+            background-color: whitesmoke;
+            color: black;
+            text-align: center;
+            padding: 5px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slider-container">
+        <div class="slider" id="slider">
+            <div class="slide" id="slide1"></div>
+            <div class="slide" id="slide2"></div>
+            <div class="slide" id="slide3"></div>
+            <div class="slide" id="slide4"></div>
+        </div>
+        <div class="slider-text-container">
+            <div class="slider-text" id="text1">
+                <h1>Kalitenizi Sarar, Güvenle Taşırız!</h1>
+                <p>En iyi malzemelerle, güvenle paketlenmiş ürünler.</p>
+            </div>
+            <div class="slider-text" id="text2">
+                <h1>Ambalajda Güven, Toptan Çözümler!</h1>
+                <p>Her ihtiyaca uygun, kaliteli ve güvenilir ambalaj çözümleri sunuyoruz. Profesyonel hizmet anlayışımızla size en iyi hizmeti vermek için buradayız.</p>
+            </div>
+
+            <div class="slider-text" id="text3">
+                <h1>Memnuniyetiniz Bizim İçin Önemli</h1>
+                <p>Her zaman müşteri odaklı hizmet.</p>
+            </div>
+            <div class="slider-text" id="text4">
+                <h1>Hızlı ve Güvenilir</h1>
+                <p>Size en kısa sürede ulaşan hizmet.</p>
+            </div>
+        </div>
+        <div class="dots-container">
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
+            <span class="dot" data-slide="3"></span>
+            <span class="dot" data-slide="4"></span>
+        </div>
+        <div class="slider-controls">
+            <button class="slider-button" id="prev">&lt;</button>
+            <button class="slider-button" id="next">&gt;</button>
+        </div>
+    </div>
+
+    <div class="w3-row-padding w3-center w3-padding-64 header-section" id="pricing">
+        <h2>Ürünler</h2>
+        <p>Ürünleri detaylı olarak incelemek isterseniz aşağıdaki kategorilerden devam edebilirsiniz.</p> <hr /><br />
+
+        @if (categories != null && categories.Any())
+        {
+            @foreach (var category in categories)
+            {
+                <div class="w3-third w3-margin-bottom">
+                    <ul class="w3-ul w3-border w3-hover-shadow">
+                        <li class="w3-theme">
+                            <p class="w3-xlarge">@category.Name Ürünler</p>
+                        </li>
+                        <li class="w3-padding-16" style="text-align:center;">
+                            <img src="~/Image.Slider/2.png" alt="@category.Name" />
+                        </li>
+                        <li class="w3-theme-l5 w3-padding-24">
+                            <a asp-action="FilterProductsByCategory" asp-controller="Product" asp-route-categoryId="@category.Id" asp-route-categoryName="@category.Name" class="w3-button w3-teal w3-padding-large"><i class="fa fa-check"></i> İncele</a>
+                        </li>
+                    </ul>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Header and horizontal rule -->
+    <div class="header-section" id="news-section">
+        <h2>Haberler</h2>
+        <hr />
+    </div>
+
+    <div class="posts-container">
+        @if (posts == null || !posts.Any())
+        {
+            <p>Henüz haber bulunmuyor.</p>
+        }
+        else
+        {
+            @foreach (var item in posts)
+            {
+                @if (item.IsPublished)
+                {
+                    <div class="post-card">
+                        <div class="card p-4 border-light shadow-sm">
+                            <img src="~/Images.Posts/@item.Image" class="img-fluid rounded" alt="Haber Resmi">
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Title</h5>
+                                <p class="card-text">Açıklama: @item.Info</p>
+                            </div>
+                            <div class="hover-overlay">
+                                <a asp-action="GetByIdPost" asp-controller="Post" asp-route-id="@item.Id" asp-route-postTitle="@item.Title.ToSeoFriendly()" class="overlay-button">İncele</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2024 Your Company. All rights reserved.</p>
+    </div>
+
+    <script>
+
+        let slideIndex = 1;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const textContainers = document.querySelectorAll('.slider-text');
+        const totalSlides = slides.length;
+        const slideInterval = 5000; // 5 saniye
+
+        function showSlide(n) {
+            if (n > totalSlides) { slideIndex = 1; }
+            if (n < 1) { slideIndex = totalSlides; }
+            slides.forEach((slide, index) => {
+                slide.style.transform = `translateX(-${(slideIndex - 1) * 100}%)`;
+            });
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[slideIndex - 1].classList.add('active');
+            textContainers.forEach((text, index) => {
+                text.style.display = (index === slideIndex - 1) ? 'block' : 'none';
+            });
+        }
+
+        function nextSlide() {
+            showSlide(++slideIndex);
+        }
+
+        function prevSlide() {
+            showSlide(--slideIndex);
+        }
+
+        document.getElementById('next').addEventListener('click', () => {
+            nextSlide();
+        });
+
+        document.getElementById('prev').addEventListener('click', () => {
+            prevSlide();
+        });
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                slideIndex = parseInt(dot.getAttribute('data-slide'));
+                showSlide(slideIndex);
+            });
+        });
+
+        // Initial call to show the first slide
+        showSlide(slideIndex);
+
+        // Set interval to change slides automatically
+        setInterval(nextSlide, slideInterval);
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

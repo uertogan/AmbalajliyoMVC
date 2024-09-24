@@ -1,0 +1,41 @@
+﻿@model AmbalajliyoMVC.ViewModels.RoleViewModel
+
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Roller</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllRoles", "AdminRole")">Rol Listesi</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Rol Düzenle</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <form asp-action="UpdateRole" method="post">
+                <input type="hidden" asp-for="Id" value="@Model.Id" />
+                <div class="form-group">
+                    <label asp-for="Name">Rol Adı</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </form>
+        </div>
+    </div>
+</div>

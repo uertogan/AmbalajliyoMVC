@@ -1,0 +1,76 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model CategoryViewModel
+
+@{
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Kategoriler</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href=" @Url.Action("GetAllCategory")">Kategori Listesi</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Kategori Güncelle</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h4>Kategori</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+            </dl>
+            @* <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"> @Html.DisplayNameFor(model => model.Name)</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                <a class="btn btn-secondary btn-lg me-2" asp-action="UpdateCategory" asp-route-id="@item.Id">Güncelle</a>
+                                <a class="btn btn-info btn-lg me-2" asp-action="GetByIdCategory" asp-route-id="@item.Id">Detay</a>
+                                <form asp-action="DeleteCategory" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-danger btn-lg">Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table> *@
+        </div>
+        <div>
+            <a asp-action="UpdateCategory" asp-route-id="@Model?.Id">Güncelle</a> |
+            <a asp-action="GetAllCategory">Listeye geri dön</a>
+        </div>
+    </div>
+</div>

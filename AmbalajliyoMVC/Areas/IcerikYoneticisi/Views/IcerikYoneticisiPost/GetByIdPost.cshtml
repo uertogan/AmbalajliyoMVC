@@ -1,0 +1,70 @@
+﻿@using AmbalajliyoMVC.Helper
+@using AmbalajliyoMVC.ViewModels
+@model PostViewModel
+
+
+    <div class="container">
+        <div class="page-inner">
+            <div class="page-header">
+                <h3 class="fw-bold mb-3">Haberler</h3>
+                <ul class="breadcrumbs mb-3">
+                    <li class="nav-home">
+                        <a href="#">
+                            <i class="icon-home"></i>
+                        </a>
+                    </li>
+                    <li class="separator">
+                        <i class="icon-arrow-right"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a href=" @Url.Action("GelAllPost")">Haber Listesi</a>
+                    </li>
+                    <li class="separator">
+                        <i class="icon-arrow-right"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">Haber Detayları</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <h4>Ürün Detayları</h4>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Title)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Title)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Info)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Info)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.IsPublished)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.IsPublished)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Image)
+                    </dt>
+                    <dd class="col-sm-10">
+                        <img src="~/Images.Posts/@Model.Image" class="img-fluid rounded-start" alt="...">
+                    </dd>
+
+
+                </dl>
+            </div>
+            <div>
+                <a asp-action="UpdatePost" asp-route-postTitle="@Model.Title.ToSeoFriendly()" asp-route-id="@Model.Id">Güncelle</a> |
+                <a asp-action="GetAllPost">Listeye geri dön</a>
+
+            </div>
+        </div>
+    </div>
+

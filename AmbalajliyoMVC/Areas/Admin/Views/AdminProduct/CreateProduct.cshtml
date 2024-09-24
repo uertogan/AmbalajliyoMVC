@@ -1,0 +1,80 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model ProductViewModel
+
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+}
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Ürünler</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllProduct")">Ürün Listesi</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Ürün Ekle</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="CreateProduct" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Ürün Adı</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label">Açıklama</label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label">Fiyat</label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ImageUrl" class="control-label">Resim Ekle</label>
+                        <input asp-for="ImageUrl" type="file" class="form-control" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="CategoryId" class="control-label">Kategori Seçiniz:</label>
+                        <select class="form-control" asp-for="CategoryId">
+                            @foreach (var item in categories)
+                            {
+                                <option value="@item.GetType().GetProperty("Id").GetValue(item)">
+                                    @item.GetType().GetProperty("Name").GetValue(item)
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <input type="submit" value="Oluştur" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="GetAllProduct">Listeye geri dön</a>
+        </div>
+    </div>
+</div>

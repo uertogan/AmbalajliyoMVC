@@ -1,0 +1,409 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@using X.PagedList;
+@using X.PagedList.Extensions;
+@using X.Web.PagedList
+@model IPagedList<AmbalajliyoMVC.ViewModels.CustomerViewModel>
+
+
+@{
+    ViewData["Title"] = "GetAllIades";
+    var products = ViewBag.Products as List<ProductViewModel>;
+}
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header mb-4">
+            <h3 class="fw-bold">İadeler</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">İadeler</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">İade Listesi</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">İadeler</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="multi-filter-select" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Müşteri Adı</th>
+                                    <th>E-mail</th>
+                                    <th>Adres</th>
+                                    <th>Şehir</th>
+                                    <th>Mesaj</th>
+                                    <th>Ürün Adı</th>
+                                    <th>Oluşturulma Tarihi</th>
+                                    <th>Cevap Tarihi</th>
+                                    <th>Durumu</th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <input type="text" class="form-control" placeholder="Müşteri Adı Ara" onkeyup="filterTable(0)">
+                                    </th>
+                                    <th>
+                                        <input type="text" class="form-control" placeholder="Email Ara" onkeyup="filterTable(1)">
+                                    </th>
+                                    <th>
+                                        <input type="text" class="form-control" placeholder="Adres Ara" onkeyup="filterTable(2)">
+                                    </th>
+                                    <th>
+                                        <select class="form-select" onchange="filterTableByCity()">
+                                            <option value="">Şehir Seçiniz</option>
+                                            @foreach (var item in Model.Select(x => x.City).Distinct())
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </th>
+                                    <th></th>
+                                    <th><input type="text" class="form-control" placeholder="Ürün Adı Ara" onkeyup="filterTable(5)"></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>
+                                        <select class="form-select" id="answerFilter" onchange="filterTableByAnswer()">
+                                            <option value="">Filtre seçiniz</option>
+                                            <option value="all">Tümünü getir</option>
+                                            <option value="answered">Cevaplananları getir</option>
+                                            <option value="pending">Cevap bekleyenleri getir</option>
+                                        </select>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var customer in Model)
+                                    {
+                                        <tr role="row" class="odd" data-id="@customer.Id">
+                                            <td class="sorting_1">@customer.Name</td>
+                                            <td>@customer.Email</td>
+                                            <td>@customer.Address</td>
+                                            <td>@customer.City</td>
+                                            <td>@customer.Message</td>
+                                            @foreach (var product in products)
+                                            {
+                                                if (product.Id == customer.ProductId)
+                                                {
+                                                    <td><a asp-action="GetByIdProduct" asp-controller="MusteriHizmetleriProduct" asp-route-id="@customer.ProductId">@product.Name</a></td>
+                                                }
+                                            }
+                                            <td>@customer.CreatedDate</td>
+                                            <td>@customer.ModifiedDate</td>
+                                            @if (customer.IsItAnswered == false)
+                                            {
+                                                <td>
+                                                    <a class="btn btn-outline-primary" asp-action="Update" asp-controller="AdminCustomer" asp-route-id="@customer.Id">Cevap Ver</a>
+                                                </td>
+                                            }
+                                            @if (customer.IsItAnswered == true)
+                                            {
+                                                <td>
+                                                    <a class="btn btn-outline-danger" asp-action="Update" asp-controller="AdminCustomer" asp-route-id="@customer.Id">Cevap Verildi</a>
+                                                </td>
+                                            }
+                                            <td><input type="hidden" id="isItAnswered_@customer.Id" value="@customer.IsItAnswered.ToString().ToLower()" /></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="9" class="text-center">Veri yok</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <ul class="pagination">
+                                @if (Model.HasPreviousPage)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("GetAllIades", new {page = Model.PageNumber - 1 })">Previous</a>
+                                    </li>
+                                }
+                                @for (int i = 1; i <= Model.PageCount; i++)
+                                {
+                                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("GetAllIades", new { page = i })">@i</a>
+                                    </li>
+                                }
+                                @if (Model.HasNextPage)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("GetAllIades", new { page = Model.PageNumber + 1 })">Next</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterTable(columnIndex) {
+        var input, filter, table, tbody, tr, td, i, txtValue;
+        input = event.target;
+        filter = input.value.toUpperCase();
+        table = document.getElementById("multi-filter-select");
+        tbody = table.getElementsByTagName("tbody")[0];  // Yalnızca tbody'yi al
+        tr = tbody.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[columnIndex];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function filterTableByCity() {
+        var select, filter, table, tbody, tr, td, i, txtValue;
+        select = document.querySelector('.form-select');
+        filter = select.value.toUpperCase();
+        table = document.getElementById("multi-filter-select");
+        tbody = table.getElementsByTagName("tbody")[0];  // Yalnızca tbody'yi al
+        tr = tbody.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[3];  // Şehir sütunu (index 3)
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (filter === "" || txtValue.toUpperCase() === filter) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function filterTableByAnswer() {
+        var select, filter, table, tbody, tr, i, hiddenInput, isItAnswered;
+        select = document.getElementById("answerFilter");
+        filter = select.value;
+        table = document.getElementById("multi-filter-select");
+        tbody = table.getElementsByTagName("tbody")[0];  // Yalnızca tbody'yi al
+        tr = tbody.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            var dataId = tr[i].dataset.id;  // `data-id`'yi al
+            var inputId = 'isItAnswered_' + dataId;
+            hiddenInput = document.getElementById(inputId);
+
+            if (hiddenInput) {
+                isItAnswered = hiddenInput.value === 'true';
+
+                if (filter === "all") {
+                    tr[i].style.display = "";  // Tüm satırları göster
+                } else if (filter === "answered" && isItAnswered) {
+                    tr[i].style.display = "";  // Cevaplananları göster
+                } else if (filter === "pending" && !isItAnswered) {
+                    tr[i].style.display = "";  // Cevap bekleyenleri göster
+                } else {
+                    tr[i].style.display = "none";  // Uygun olmayanları gizle
+                }
+            } else {
+                tr[i].style.display = "none";  // Gizli input bulunamazsa satırı gizle
+            }
+        }
+    }
+
+</script>
+
+<style>
+    /* Sayfalama kapsayıcısı */
+    .text-center {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Sayfalama liste stili */
+    .pagination {
+        display: inline-flex;
+        padding-left: 0;
+        list-style: none;
+        border-radius: 0.25rem;
+    }
+
+    /* Sayfa düğmeleri */
+    .page-item {
+        margin: 0 2px;
+    }
+
+    .page-link {
+        position: relative;
+        display: block;
+        padding: 0.5rem 0.75rem;
+        margin: 0;
+        line-height: 1.25;
+        color: #333;
+        text-align: center;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        text-decoration: none;
+    }
+
+    /* Aktif sayfa */
+    .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #333;
+        border-color: #333;
+    }
+
+    /* Sayfa düğmesine hover efekti */
+    .page-link:hover {
+        color: #333;
+        background-color: #e9ecef;
+        border-color: #ddd;
+    }
+
+    /* İlk ve son sayfa düğmeleri */
+    .page-item:first-child .page-link,
+    .page-item:last-child .page-link {
+        border-radius: 0.25rem;
+    }
+    div.table-responsive > div.dataTables_wrapper > div.row {
+        margin: 0;
+    }
+
+    .row > * {
+        flex-shrink: 0;
+        width: 100%;
+        max-width: 100%;
+        padding-right: calc(var(--bs-gutter-x)* .5);
+        padding-left: calc(var(--bs-gutter-x)* .5);
+        margin-top: var(--bs-gutter-y);
+    }
+
+    div {
+        display: block;
+        unicode-bidi: isolate;
+    }
+
+    .card .card-header:first-child, .card-light .card-header:first-child {
+        border-radius: 0;
+    }
+
+    .card .card-header, .card-light .card-header {
+        padding: 1rem 1.25rem;
+        background-color: transparent;
+        border-bottom: 1px solid #ebecec !important;
+    }
+
+    .card .card-body, .card-light .card-body {
+        padding: 1.25rem;
+    }
+
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    body, html {
+        font-size: 14px;
+        color: #2a2f5b;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: inherit;
+        border-style: solid;
+        border-width: 0;
+    }
+
+    tr {
+        display: table-row;
+        vertical-align: inherit;
+        unicode-bidi: isolate;
+        border-color: inherit;
+    }
+
+    tfoot {
+        display: table-footer-group;
+        vertical-align: middle;
+        unicode-bidi: isolate;
+        border-color: inherit;
+    }
+
+    .table > tfoot > tr > td, .table > tfoot > tr > th {
+        padding: 12px 24px !important;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+    }
+
+    .form-select {
+        --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e);
+        display: block;
+        width: 100%;
+        padding: .375rem 2.25rem .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--bs-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--bs-body-bg);
+        background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+        background-repeat: no-repeat;
+        background-position: right .75rem center;
+        background-size: 16px 12px;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        border-radius: var(--bs-border-radius);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    select {
+        word-wrap: normal;
+    }
+
+    button, select {
+        text-transform: none;
+    }
+
+    option {
+        font-weight: normal;
+        display: block;
+        padding-block-start: 0px;
+        padding-block-end: 1px;
+        min-block-size: 1.2em;
+        padding-inline: 2px;
+        white-space: nowrap;
+    }
+</style>

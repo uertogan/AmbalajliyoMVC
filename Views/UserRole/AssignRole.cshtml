@@ -1,0 +1,29 @@
+﻿@model AmbalajliyoMVC.ViewModels.UserRoleViewModel
+
+@{
+    ViewData["Title"] = "Assign Role";
+}
+
+<h1>Assign Role to User</h1>
+
+<form asp-action="AssignRole" method="post">
+    <div class="form-group">
+        <label asp-for="UserName" class="control-label"></label>
+        <input asp-for="UserName" class="form-control" readonly />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" readonly />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RoleId" class="control-label">Role</label>
+        <select asp-for="RoleId" class="form-control" asp-items="@(new SelectList(Model.Roles, "Id", "Name"))"></select>
+        <span asp-validation-for="RoleId" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="UserId" />
+    <button type="submit" class="btn btn-primary">Assign Role</button>
+</form>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>

@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> </title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AmbalajliyoMVC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css-bundle" />
+
+    <style>
+
+        body {
+            font-family: 'Playfair Display', serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-top {
+            width: 100%;
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: space-between;
+        }
+
+        .social-link a {
+            margin-left: 20px;
+            transition: 0.5s ease;
+            cursor: pointer;
+        }
+
+            .social-link a img:hover {
+                background-color:lightgray;
+                border-radius: 80px;
+            }
+
+        .logo h3 {
+            font-weight: bold;
+            font-size: 2.5rem;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Playfair Display', serif; /* Şık bir serif yazı tipi */
+            position: relative;
+        }
+
+        .main-content {
+            width: 100%;
+            height: 90vh;
+        }
+
+        #navbar-color {
+            background-color: rgba(238,224,208);
+        }
+
+        .navbar-nav {
+            margin: auto;
+        }
+
+        .nav-link {
+            margin-left: 30px;
+            font-weight: bold;
+            color: black;
+            transition: 0.5s ease;
+            cursor: pointer;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: black /* Varsayılan metin rengi */
+            font-weight: 500; /* Font kalınlığı */
+            transition: color 0.3s, background-color 0.3s; /* Geçiş efekti */
+        }
+
+            /* Hover efekti */
+            .navbar-nav .nav-item .nav-link:hover {
+                color: brown; /* Metin rengi */
+                background-color: rgba(255, 255, 255, 0.1); /* Arka plan rengi */
+                border-radius: 5px; /* Köşe yuvarlama */
+                padding: 10px 15px; /* İç boşluk */
+                text-decoration: none; /* Alt çizgi kaldırma */
+            }
+
+        /* Genel Stiller */
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar-light.bg-light {
+            background-color: #f8f9fa !important;
+        }
+
+        .navbar a.nav-link,
+        .navbar .navbar-brand,
+        footer {
+            color: #000000;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+        }
+
+        .navbar-brand img.logo {
+            width: 50px; /* Logonun genişliği */
+            height: 50px; /* Logonun yüksekliği */
+            object-fit:; /* Resmin en-boy oranını korur */
+            margin-right: 10px; /* Logonun sağındaki boşluk */
+        }
+
+    </style>
+</head>
+<body class="text-dark">
+    <!--navbar top-->
+    <div class="container">
+        <div class="navbar-top">
+            <div class="social-link">
+                <a asp-action="Login" asp-controller="User"><img src="~/Images/admin-login.png" alt="" width="80px"></a>
+            </div>
+            <div class="logo">
+                <h3>AMBALAJLIYOO</h3>
+            </div>
+            <div class="icons"></div>
+        </div>
+    </div>
+    <!--navbar top-->
+    <!--main content-->
+
+    <nav class="navbar navbar-expand-md" id="navbar-color">
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" asp-action="Index" asp-controller="Home">Anasayfa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-action="GetAllCatalog" asp-controller="Catalog">Kataloglar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-action="Hakkimizda" asp-controller="Home">Hakkımızda</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-action="MisyonVizyonDegerlerimiz" asp-controller="Home">Vizyon-Misyon-Değerlerimiz</a>
+                </li>
+                @if (ViewContext.RouteData.Values["action"].ToString() == "Index" &&
+                ViewContext.RouteData.Values["controller"].ToString() == "Home")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Ürünler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#news-section">Haberler</a>
+                    </li>                    
+                }
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="GetAllFaq">Sıkça Sorulan Sorular</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--main content-->
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted" style="height:6px">
+        <div class="container">
+            &copy; 2024 - AmbalajliyoMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="js-bundle" debug = "true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

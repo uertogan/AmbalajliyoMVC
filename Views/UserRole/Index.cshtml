@@ -1,0 +1,35 @@
+﻿@model IEnumerable<AmbalajliyoMVC.ViewModels.UserRoleViewModel>
+
+@{
+    ViewData["Title"] = "User Role Management";
+}
+
+<h1>User Role Management</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var userRole in Model)
+        {
+            <tr>
+                <td>@userRole.UserName</td>
+                <td>@userRole.Email</td>
+                <td>@userRole.RoleName</td>
+                <td>
+                    <a href="@Url.Action("AssignRole", new { userId = userRole.UserId })" class="btn btn-primary">Assign Role</a>
+                    <form asp-action="RemoveRole" method="post" style="display:inline;">
+                        <input type="hidden" name="userId" value="@userRole.UserId" />
+                        <button type="submit" class="btn btn-danger">Remove Role</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,237 @@
+﻿@model List<AmbalajliyoMVC.ViewModels.CustomerViewModel>
+
+@{
+    ViewData["Title"] = "GetAllSiparis";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header mb-4">
+            <h3 class="fw-bold">İadeler</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">İadeler</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">İade Listesi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">İadeler</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="multi-filter-select"
+                               class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Müşteri Adı</th>
+                                    <th>Email</th>
+                                    <th>Adres</th>
+                                    <th>Şehir</th>
+                                    <th>Mesaj</th>
+                                    <th>Ürün Id</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>
+                                        <select class="form-select">
+                                            <option value="">Select Name</option>
+                                            @foreach (var item in Model.Select(x => x.Name).Distinct())
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select class="form-select">
+                                            <option value="">Select Email</option>
+                                            @foreach (var item in Model.Select(x => x.Email).Distinct())
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select class="form-select">
+                                            <option value="">Select Address</option>
+                                            @foreach (var item in Model.Select(x => x.Address).Distinct())
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select class="form-select">
+                                            <option value="">Select City</option>
+                                            @foreach (var item in Model.Select(x => x.City).Distinct())
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var customer in Model)
+                                    {
+                                        <tr role="row" class="odd">
+                                            <td class="sorting_1">@customer.Name</td>
+                                            <td>@customer.Email</td>
+                                            <td>@customer.Address</td>
+                                            <td>@customer.City</td>
+                                            <td>@customer.Message</td>
+                                            <td><a asp-action="GetByIdProduct" asp-controller="Product" asp-route-id="@customer.ProductId">@customer.ProductId</a></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">No data available</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    div.table-responsive > div.dataTables_wrapper > div.row {
+        margin: 0;
+    }
+
+    .row > * {
+        flex-shrink: 0;
+        width: 100%;
+        max-width: 100%;
+        padding-right: calc(var(--bs-gutter-x)* .5);
+        padding-left: calc(var(--bs-gutter-x)* .5);
+        margin-top: var(--bs-gutter-y);
+    }
+
+    div {
+        display: block;
+        unicode-bidi: isolate;
+    }
+
+    .card .card-header:first-child, .card-light .card-header:first-child {
+        border-radius: 0;
+    }
+
+    .card .card-header, .card-light .card-header {
+        padding: 1rem 1.25rem;
+        background-color: transparent;
+        border-bottom: 1px solid #ebecec !important;
+    }
+
+    .card .card-body, .card-light .card-body {
+        padding: 1.25rem;
+    }
+
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    body, html {
+        font-size: 14px;
+        color: #2a2f5b;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: inherit;
+        border-style: solid;
+        border-width: 0;
+    }
+
+    tr {
+        display: table-row;
+        vertical-align: inherit;
+        unicode-bidi: isolate;
+        border-color: inherit;
+    }
+
+    tfoot {
+        display: table-footer-group;
+        vertical-align: middle;
+        unicode-bidi: isolate;
+        border-color: inherit;
+    }
+
+    .table > tfoot > tr > td, .table > tfoot > tr > th {
+        padding: 12px 24px !important;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+    }
+
+    .form-select {
+        --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e);
+        display: block;
+        width: 100%;
+        padding: .375rem 2.25rem .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--bs-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--bs-body-bg);
+        background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+        background-repeat: no-repeat;
+        background-position: right .75rem center;
+        background-size: 16px 12px;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        border-radius: var(--bs-border-radius);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    select {
+        word-wrap: normal;
+    }
+
+    button, select {
+        text-transform: none;
+    }
+
+    option {
+        font-weight: normal;
+        display: block;
+        padding-block-start: 0px;
+        padding-block-end: 1px;
+        min-block-size: 1.2em;
+        padding-inline: 2px;
+        white-space: nowrap;
+    }
+</style>

@@ -1,0 +1,320 @@
+﻿@using X.PagedList;
+@using X.PagedList.Extensions;
+@using X.Web.PagedList
+
+@model IPagedList<AmbalajliyoMVC.ViewModels.LogEntryViewModel>
+
+@{
+    ViewData["Title"] = "GetAllLog";
+
+    var startDate = TempData["StartDate"] as DateTime?;
+    var endDate = TempData["EndDate"] as DateTime?;
+}
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header mb-4">
+            <h3 class="fw-bold">Sistem Kayıtları</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Sistem Kayıtları</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Kayıt Listesi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Sistem Kayıtları</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <!-- Filtreleme Formu -->
+                    <div class="col-md-6 mb-3">
+                        <div class="filter-box">
+                            <form id="dateFilterForm" method="post" action="@Url.Action("GetAllLog", "AdminUser")">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="startDate" class="form-label">Başlangıç Tarihi:</label>
+                                        <input type="datetime-local" id="startDate" name="startDate" class="form-control" value="">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="endDate" class="form-label">Bitiş Tarihi:</label>
+                                        <input type="datetime-local" id="endDate" name="endDate" class="form-control" value="">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary">Filtrele</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Filtreleme Sonrası Sonuçlar -->
+                    <div class="col-md-6 mb-3">
+                        <div class="result-box" style="background-color:bisque">
+                            <p><strong>Filtreleme Aralığı</strong></p>
+                            @if (startDate.HasValue)
+                            {
+                                <p><strong>Başlangıç Tarihi:</strong> @startDate.Value.ToString("yyyy-MM-dd HH:mm")</p>
+                            }
+                            @if (endDate.HasValue)
+                            {
+                                <p><strong>Bitiş Tarihi:</strong> @endDate.Value.ToString("yyyy-MM-dd HH:mm")</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="logTable" class="display table table-striped table-hover">
+                        <tr>
+                            <th>Zaman Damgası</th>
+                            <th>Seviye</th>
+                            <th>Mesaj</th>
+                            <th>Hata</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>
+                                <select id="levelFilter" class="form-select">
+                                    <option value="">Seviye Seç</option>
+                                    @foreach (var item in Model.Select(x => x.Level).Distinct())
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </select>
+                            </th>
+                            <th>
+                                <input type="text" id="messageFilter" class="form-control" placeholder="Mesaj Ara">
+                            </th>
+                        </tr>
+                        <tbody id="logTableBody">
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var log in Model)
+                                {
+                                    <tr role="row" class="odd">
+                                        <td>@log.TimeStamp</td>
+                                        <td>@log.Level</td>
+                                        <td>@log.Message</td>
+                                        <td>@log.Exception</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Veri yok</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <form asp-action="GetAllLog" method="post">
+                        <div class="text-center">
+                            <ul class="pagination">
+                                @if (Model.HasPreviousPage)
+                                {
+                                    <li class="page-item">
+                                        <form method="post" asp-action="GetAllLog">
+                                            <input type="hidden" name="startDate" value="@TempData["StartDate"]" />
+                                            <input type="hidden" name="endDate" value="@TempData["EndDate"]" />
+                                            <input type="hidden" name="page" value="@Model.PageNumber - 1" />
+                                            <button type="submit" class="page-link">Previous</button>
+                                        </form>
+                                    </li>
+                                }
+                                @for (int i = 1; i <= Model.PageCount; i++)
+                                {
+                                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                        <form method="post" asp-action="GetAllLog">
+                                            <input type="hidden" name="startDate" value="@TempData["StartDate"]" />
+                                            <input type="hidden" name="endDate" value="@TempData["EndDate"]" />
+                                            <input type="hidden" name="page" value="@i" />
+                                            <button type="submit" class="page-link">@i</button>
+                                        </form>
+                                    </li>
+                                }
+                                @if (Model.HasNextPage)
+                                {
+                                    <li class="page-item">
+                                        <form method="post" asp-action="GetAllLog">
+                                            <input type="hidden" name="startDate" value="@TempData["StartDate"]" />
+                                            <input type="hidden" name="endDate" value="@TempData["EndDate"]" />
+                                            <input type="hidden" name="page" value="@Model.PageNumber + 1" />
+                                            <button type="submit" class="page-link">Next</button>
+                                        </form>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // Filtering functionality
+        function filterTable() {
+            const levelFilter = $('#levelFilter').val().toLowerCase();
+            const messageFilter = $('#messageFilter').val().toLowerCase();
+
+            $('#logTableBody tr').each(function () {
+                const level = $(this).find('td:eq(1)').text().toLowerCase();
+                const message = $(this).find('td:eq(2)').text().toLowerCase();
+
+                if ((level.includes(levelFilter) || levelFilter === '') &&
+                    (message.includes(messageFilter) || messageFilter === '')) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+        $('#levelFilter, #messageFilter').on('change keyup', function () {
+            filterTable();
+        });
+    });
+</script>
+
+<style>
+    /* Sayfalama kapsayıcısı */
+    .text-center {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Sayfalama liste stili */
+    .pagination {
+        display: inline-flex;
+        padding-left: 0;
+        list-style: none;
+        border-radius: 0.25rem;
+    }
+
+    /* Sayfa düğmeleri */
+    .page-item {
+        margin: 0 2px;
+    }
+
+    .page-link {
+        position: relative;
+        display: block;
+        padding: 0.5rem 0.75rem;
+        margin: 0;
+        line-height: 1.25;
+        color: #333;
+        text-align: center;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        text-decoration: none;
+    }
+
+    /* Aktif sayfa */
+    .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #333;
+        border-color: #333;
+    }
+
+    /* Sayfa düğmesine hover efekti */
+    .page-link:hover {
+        color: #333;
+        background-color: #e9ecef;
+        border-color: #ddd;
+    }
+
+    /* İlk ve son sayfa düğmeleri */
+    .page-item:first-child .page-link,
+    .page-item:last-child .page-link {
+        border-radius: 0.25rem;
+    }
+    .filter-box, .result-box {
+        border: 1px solid black;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 0 10px;
+    }
+
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    body, html {
+        font-size: 14px;
+        color: #2a2f5b;
+    }
+
+    .card .card-header {
+        padding: 1rem 1.25rem;
+        background-color: transparent;
+        border-bottom: 1px solid #ebecec !important;
+    }
+
+    .card .card-body {
+        padding: 1.25rem;
+    }
+
+    .form-select {
+        --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e);
+        display: block;
+        width: 100%;
+        padding: .375rem 2.25rem .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--bs-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--bs-body-bg);
+        background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+        background-repeat: no-repeat;
+        background-position: right .75rem center;
+        background-size: 16px 12px;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        border-radius: var(--bs-border-radius);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    button, select {
+        text-transform: none;
+    }
+
+    option {
+        font-weight: normal;
+        display: block;
+        padding-block-start: 0px;
+        padding-block-end: 1px;
+        min-block-size: 1.2em;
+        padding-inline: 2px;
+        white-space: nowrap;
+    }
+</style>

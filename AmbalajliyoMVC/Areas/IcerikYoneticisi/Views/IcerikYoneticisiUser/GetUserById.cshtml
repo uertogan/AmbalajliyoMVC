@@ -1,0 +1,133 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model AmbalajliyoMVC.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Personel Detayları";
+    var roles = ViewBag.Roles as List<RoleViewModel> ?? new List<RoleViewModel>();
+    var users = ViewBag.Users as List<UserViewModel> ?? new List<UserViewModel>();
+
+    var userId = Context.Session.GetString("UserId");
+    var user = users.FirstOrDefault(u => u.Id == userId);
+    var roleName = roles.FirstOrDefault(r => r.Id == user.AmbalajliyoRoleId)?.Name;
+}
+<div class="container">
+    <div class="page-inner">
+
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Personel</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a>Personel</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Personel Detayları</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Personel Detayları</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <input type="hidden" asp-for="Id" value="@userId" />
+
+                                <dt class="col-sm-3 font-weight-bold">Kullanıcı Adı:</dt>
+                                <dd class="col-sm-9">@user.UserName</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">E-posta:</dt>
+                                <dd class="col-sm-9">@user.Email</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Ad:</dt>
+                                <dd class="col-sm-9">@user.Name</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Soyad:</dt>
+                                <dd class="col-sm-9">@user.Surname</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Rol:</dt>
+                                <dd class="col-sm-9">@roleName</dd>
+                            </dl>
+                        </div>
+                        <div class="card-footer text-end">
+
+                            <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#passwordModal">Düzenle</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Şifre Doğrulama Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">Şifre Doğrulama</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <form id="passwordForm">
+                    <div class="mb-3">
+                        <label for="sifre" class="form-label">Şifrenizi Girin</label>
+                        <input type="password" class="form-control" id="sifre" name="sifre" required>
+                    </div>
+                    <input type="hidden" id="id" name="id" value="@user.Id" />
+                    <div id="error-message" class="text-danger"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" id="verifyPasswordButton" class="btn btn-primary" asp-action="PasswordCheck" asp-route-id="@user.Id">Kontrol Et</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#verifyPasswordButton').click(function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                var password = $('#sifre').val();
+                var userId = $('#id').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PasswordCheck")',
+                    data: { id: userId, sifre: password },
+                    success: function (response) {
+                        if (response.redirectTo) {
+                            // Redirect to the URL provided in the response
+                            window.location.href = response.redirectTo;
+                        } else {
+                            // Handle failed password validation
+                            $('#error-message').text("Hatalı şifre girdiniz, tekrar deneyiniz!");
+                        }
+                    },
+                    error: function () {
+                        $('#error-message').text("Bir hata oluştu. Tekrar Deneyiniz!");
+                    }
+                });
+            });
+        });
+    </script>
+}

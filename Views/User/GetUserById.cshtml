@@ -1,0 +1,165 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model AmbalajliyoMVC.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Personel Detayları";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var roles = ViewBag.Roles as List<RoleViewModel> ?? new List<RoleViewModel>();
+    var roleName = roles.FirstOrDefault(r => r.Id == Model.AmbalajliyoRoleId)?.Name;
+    var user = Context.Session.GetString("UserLogin");
+}
+<div class="container">
+    <div class="page-inner">
+        @if (user == "True")
+        {
+            <div class="page-header">
+                <h3 class="fw-bold mb-3">Personeller</h3>
+                <ul class="breadcrumbs mb-3">
+                    <li class="nav-home">
+                        <a href="#">
+                            <i class="icon-home"></i>
+                        </a>
+                    </li>
+                    <li class="separator">
+                        <i class="icon-arrow-right"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a href=" @Url.Action("Index")">Personel Listesi</a>
+                    </li>
+                    <li class="separator">
+                        <i class="icon-arrow-right"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">Personel Detayları</a>
+                    </li>
+                </ul>
+            </div>
+        }
+        else
+        {
+            <div class="page-header">
+                <h3 class="fw-bold mb-3">Personel</h3>
+                <ul class="breadcrumbs mb-3">
+                    <li class="nav-home">
+                        <a href="#">
+                            <i class="icon-home"></i>
+                        </a>
+                    </li>
+                    <li class="separator">
+                        <i class="icon-arrow-right"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a href="">Personel</a>
+                    </li>
+                    <li class="separator">
+                        <i class="icon-arrow-right"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">Personel Detayları</a>
+                    </li>
+                </ul>
+            </div>
+        }
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Personel Detayları</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+
+                                <input type="hidden" asp-for="Id" value="@Model.Id"/>
+
+                                <dt class="col-sm-3 font-weight-bold">Kullanıcı Adı:</dt>
+                                <dd class="col-sm-9">@Model.UserName</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">E-posta:</dt>
+                                <dd class="col-sm-9">@Model.Email</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Ad:</dt>
+                                <dd class="col-sm-9">@Model.Name</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Soyad:</dt>
+                                <dd class="col-sm-9">@Model.Surname</dd>
+
+                                <dt class="col-sm-3 font-weight-bold">Rol:</dt>
+                                <dd class="col-sm-9">@roleName</dd>
+                            </dl>
+                        </div>
+                        <div class="card-footer text-end">
+                            @if (user == "True")
+                            {
+                                <a href="@Url.Action("Index")" class="btn btn-outline-danger">Geri Dön</a>
+                            }
+                            else
+                            {
+                                <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#passwordModal">Düzenle</a>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Şifre Doğrulama Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">Şifre Doğrulama</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <form id="passwordForm">
+                    <div class="mb-3">
+                        <label for="sifre" class="form-label">Şifrenizi Girin</label>
+                        <input type="password" class="form-control" id="sifre" name="sifre" required>
+                    </div>
+                    <input type="hidden" id="id" name="id" value="@Model.Id" />
+                    <div id="error-message" class="text-danger"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" id="verifyPasswordButton" class="btn btn-primary" asp-action="PasswordCheck" asp-route-id ="@Model.Id">Kontrol Et</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#verifyPasswordButton').click(function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                var password = $('#sifre').val();
+                var userId = $('#id').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PasswordCheck")',
+                    data: { id: userId, sifre: password },
+                    success: function (response) {
+                        if (response.redirectTo) {
+                            // Redirect to the URL provided in the response
+                            window.location.href = response.redirectTo;
+                        } else {
+                            // Handle failed password validation
+                            $('#error-message').text("Incorrect password. Please try again.");
+                        }
+                    },
+                    error: function () {
+                        $('#error-message').text("An error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+}
+

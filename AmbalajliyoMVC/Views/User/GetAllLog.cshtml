@@ -1,0 +1,377 @@
+﻿@model IEnumerable<AmbalajliyoMVC.ViewModels.LogEntryViewModel>
+
+@{
+    ViewData["Title"] = "GetAllLog";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+@* 
+ <div class="container">
+    <div class="page-inner">
+        <div class="page-header mb-4">
+            <h3 class="fw-bold">Sistem Kayıtları</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Sistem Kayıtları</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Kayıt Listesi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Sistem Kayıtları</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="multi-filter-select"
+                               class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Zaman Damgası</th>
+                                    <th>Seviye</th>
+                                    <th>Mesaj</th>
+                                    <th>Hata</th>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="text" id="timeFilter" class="form-control" placeholder="Zaman Ara">
+                                    </th>
+                                    <th>
+                                        <select id="levelFilter" class="form-select">
+                                            <option value="">Seviye Seç</option>
+                                            @foreach (var item in Model.Select(x => x.Level).Distinct())
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <input type="text" id="messageFilter" class="form-control" placeholder="Mesaj Ara">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var log in Model)
+                                    {
+                                        <tr role="row" class="odd">
+                                            <td>@log.TimeStamp</td>
+                                            <td>@log.Level</td>
+                                            <td>@log.Message</td>
+                                            <td>@log.Exception</td>
+                                            <td><a asp-action="GetAllLog" asp-controller="User" asp-route-id="@log.Id">@log.Id</a></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">No data available</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Function to filter table based on selected values
+        function filterTable() {
+            var timeFilter = $('#timeFilter').val().toLowerCase();
+            var levelFilter = $('#levelFilter').val().toLowerCase();
+            var messageFilter = $('#messageFilter').val().toLowerCase();
+
+            $('#multi-filter-select tbody tr').each(function () {
+                var time = $(this).find('td:eq(0)').text().toLowerCase();
+                var level = $(this).find('td:eq(1)').text().toLowerCase();
+                var message = $(this).find('td:eq(2)').text().toLowerCase();
+
+                if ((time.includes(timeFilter) || timeFilter === '') &&
+                    (level.includes(levelFilter) || levelFilter === '') &&
+                    (message.includes(messageFilter) || messageFilter === '')) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+        // Attach the filter function to the change event of the select elements
+        $('#timeFilter, #levelFilter, #messageFilter').on('change keyup', function () {
+            filterTable();
+        });
+    });
+</script> 
+
+ *@
+
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header mb-4">
+            <h3 class="fw-bold">Sistem Kayıtları</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Sistem Kayıtları</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Kayıt Listesi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Sistem Kayıtları</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="multi-filter-select"
+                               class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Zaman Damgası</th>
+                                    <th>Seviye</th>
+                                    <th>Mesaj</th>
+                                    <th>Hata</th>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="text" id="timeFilter" class="form-control" placeholder="Zaman Ara">
+                                    </th>
+                                    <th>
+                                        <select id="levelFilter" class="form-select">
+                                            <option value="">Seviye Seç</option>
+                                            @foreach (var item in Model.Select(x => x.Level).Distinct())
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <input type="text" id="messageFilter" class="form-control" placeholder="Mesaj Ara">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var log in Model)
+                                    {
+                                        <tr role="row" class="odd">
+                                            <td>@log.TimeStamp</td>
+                                            <td>@log.Level</td>
+                                            <td>@log.Message</td>
+                                            <td>@log.Exception</td>
+                                            <td><a asp-action="GetAllLog" asp-controller="User" asp-route-id="@log.Id">@log.Id</a></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">Veri yok</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Sayfa yüklendiğinde tüm kayıtları gizle
+        $('#multi-filter-select tbody tr').hide();
+
+        // Filtreleme fonksiyonu
+        function filterTable() {
+            var timeFilter = $('#timeFilter').val().toLowerCase();
+            var levelFilter = $('#levelFilter').val().toLowerCase();
+            var messageFilter = $('#messageFilter').val().toLowerCase();
+
+            if (timeFilter !== '') {  // Zaman filtresi doluysa verileri göster
+                $('#multi-filter-select tbody tr').each(function () {
+                    var time = $(this).find('td:eq(0)').text().toLowerCase();
+                    var level = $(this).find('td:eq(1)').text().toLowerCase();
+                    var message = $(this).find('td:eq(2)').text().toLowerCase();
+
+                    if ((time.includes(timeFilter) || timeFilter === '') &&
+                        (level.includes(levelFilter) || levelFilter === '') &&
+                        (message.includes(messageFilter) || messageFilter === '')) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            } else {
+                $('#multi-filter-select tbody tr').hide();  // Zaman filtresi boşsa tüm verileri gizle
+            }
+        }
+
+        // Zaman filtresi veya diğer filtrelerde değişiklik olduğunda tabloyu filtrele
+        $('#timeFilter, #levelFilter, #messageFilter').on('change keyup', function () {
+            filterTable();
+        });
+    });
+</script>
+
+
+<style>
+    div.table-responsive > div.dataTables_wrapper > div.row {
+        margin: 0;
+    }
+
+    .row > * {
+        flex-shrink: 0;
+        width: 100%;
+        max-width: 100%;
+        padding-right: calc(var(--bs-gutter-x)* .5);
+        padding-left: calc(var(--bs-gutter-x)* .5);
+        margin-top: var(--bs-gutter-y);
+    }
+
+    div {
+        display: block;
+        unicode-bidi: isolate;
+    }
+
+    .card .card-header:first-child, .card-light .card-header:first-child {
+        border-radius: 0;
+    }
+
+    .card .card-header, .card-light .card-header {
+        padding: 1rem 1.25rem;
+        background-color: transparent;
+        border-bottom: 1px solid #ebecec !important;
+    }
+
+    .card .card-body, .card-light .card-body {
+        padding: 1.25rem;
+    }
+
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    body, html {
+        font-size: 14px;
+        color: #2a2f5b;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: inherit;
+        border-style: solid;
+        border-width: 0;
+    }
+
+    tr {
+        display: table-row;
+        vertical-align: inherit;
+        unicode-bidi: isolate;
+        border-color: inherit;
+    }
+
+    tfoot {
+        display: table-footer-group;
+        vertical-align: middle;
+        unicode-bidi: isolate;
+        border-color: inherit;
+    }
+
+    .table > tfoot > tr > td, .table > tfoot > tr > th {
+        padding: 12px 24px !important;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+    }
+
+    .form-select {
+        --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e);
+        display: block;
+        width: 100%;
+        padding: .375rem 2.25rem .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--bs-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--bs-body-bg);
+        background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+        background-repeat: no-repeat;
+        background-position: right .75rem center;
+        background-size: 16px 12px;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        border-radius: var(--bs-border-radius);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    select {
+        word-wrap: normal;
+    }
+
+    button, select {
+        text-transform: none;
+    }
+
+    option {
+        font-weight: normal;
+        display: block;
+        padding-block-start: 0px;
+        padding-block-end: 1px;
+        min-block-size: 1.2em;
+        padding-inline: 2px;
+        white-space: nowrap;
+    }
+</style>

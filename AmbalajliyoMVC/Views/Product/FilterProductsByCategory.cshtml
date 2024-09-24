@@ -1,0 +1,277 @@
+﻿@using AmbalajliyoMVC.Helper
+@using AmbalajliyoMVC.ViewModels
+@using X.PagedList;
+@using X.PagedList.Extensions;
+@using X.Web.PagedList
+
+@model IPagedList<ProductViewModel>
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+    var categoryName = categories?.FirstOrDefault(c => Model.Any(p => p.CategoryId == c.Id));
+}
+
+<div class="container" id="filterList">
+    @if (categoryName != null)
+    {
+        <h1 class="category-title">@categoryName.Name</h1>
+    }
+    @if (!Model.Any())
+    {
+        <div class="no-products-message">
+            <img src="~/Images/empty-cart.png" alt="Ürün Bulunamadı" class="no-products-image">
+            <h1>Ürün Bulunamadı</h1>
+            <p class="message">Bu kategoriye ait herhangi bir ürün bulunamadı. Lütfen başka bir kategori seçmeyi deneyin.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn">Ana Sayfaya Dön</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="product-card">
+                        <img src="~/Images.Products/@item.Image" class="product-image" alt="@item.Name">
+                        <div class="product-info">
+                            <h5 class="product-title">@item.Name</h5>
+                            <p class="product-description">Açıklama: @item.Description</p>
+                            @{
+                                var category = categories.FirstOrDefault(c => c.Id == item.CategoryId);
+                                if (category != null)
+                                {
+                                    <p class="product-category">Kategori: @category.Name</p>
+                                }
+                            }
+                            <p class="product-price">@item.Price ₺</p>
+                        </div>
+                        <div class="product-actions">
+                            <a class="btn-action" asp-controller="Customer" asp-action="İade" asp-route-id="@item.Id">İade</a>
+                            <a class="btn-action" asp-controller="Customer" asp-action="Siparis" asp-route-id="@item.Id">Sipariş</a>
+                            <a class="btn-action" asp-controller="Customer" asp-action="Sikayet" asp-route-id="@item.Id">Şikayet</a>
+                            <a class="btn-action incele"
+                               asp-controller="Product"
+                               asp-action="GetByIdProduct"
+                               asp-route-categoryName="@category.Name.ToSeoFriendly()"
+                               asp-route-productName="@item.Name.ToSeoFriendly()"
+                               asp-route-id="@item.Id">İncele</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center">
+            <ul class="pagination">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("FilterProductsByCategory", new { categoryId = categoryName.Id, page = Model.PageNumber - 1 })">Previous</a>
+                    </li>
+                }
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("FilterProductsByCategory", new { categoryId = categoryName.Id, page = i })">@i</a>
+                    </li>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("FilterProductsByCategory", new { categoryId = categoryName.Id, page = Model.PageNumber + 1 })">Next</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+<style>
+
+    /* Sayfalama kapsayıcısı */
+    .text-center {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Sayfalama liste stili */
+    .pagination {
+        display: inline-flex;
+        padding-left: 0;
+        list-style: none;
+        border-radius: 0.25rem;
+    }
+
+    /* Sayfa düğmeleri */
+    .page-item {
+        margin: 0 2px;
+    }
+
+    .page-link {
+        position: relative;
+        display: block;
+        padding: 0.5rem 0.75rem;
+        margin: 0;
+        line-height: 1.25;
+        color: #333;
+        text-align: center;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        text-decoration: none;
+    }
+
+    /* Aktif sayfa */
+    .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #333;
+        border-color: #333;
+    }
+
+    /* Sayfa düğmesine hover efekti */
+    .page-link:hover {
+        color: #333;
+        background-color: #e9ecef;
+        border-color: #ddd;
+    }
+
+    /* İlk ve son sayfa düğmeleri */
+    .page-item:first-child .page-link,
+    .page-item:last-child .page-link {
+        border-radius: 0.25rem;
+    }
+
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    #filterList {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+
+    .no-products-message {
+        text-align: center;
+    }
+
+    .no-products-image {
+        max-width: 150px;
+        margin-bottom: 20px;
+    }
+
+    .message {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1rem;
+        color: #fff;
+        background-color: #007bff;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+    /* Modern Product Card Design */
+    .product-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: 10px;
+        text-align: left;
+    }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px;
+    }
+
+    .product-info {
+        padding: 15px;
+    }
+
+    .product-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .product-description {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    .product-category {
+        font-size: 0.9rem;
+        color: #777;
+        margin-bottom: 5px;
+    }
+
+    .product-price {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #e74c3c;
+        margin-bottom: 15px;
+    }
+
+    .product-actions {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.3s ease; /* Fade-in effect */
+    }
+
+    .product-card:hover .product-actions {
+        opacity: 1; /* Show buttons on hover */
+    }
+
+    .btn-action {
+        background-color: #007bff;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-action:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-action.incele {
+            background-color: #28a745; /* Different color for 'İncele' button */
+        }
+
+            .btn-action.incele:hover {
+                background-color: #218838;
+            }
+
+</style>

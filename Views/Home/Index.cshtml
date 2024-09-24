@@ -1,0 +1,142 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+    var posts = ViewBag.Posts as List<PostViewModel>;
+    var products = Model as List<ProductViewModel>;
+}
+
+<style>
+    /* ... mevcut stil tanımları ... */
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .posts-section {
+        padding: 2rem;
+    }
+
+        .posts-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+    .post-card {
+        margin-bottom: 1rem;
+    }
+</style>
+</head>
+<body>
+    <div class="slider-container">
+        <!-- Slider İçeriği -->
+    </div>
+
+    <div class="w3-row-padding w3-center w3-padding-64" id="pricing">
+        <h2>Kategoriler</h2>
+        <p>İlgili kategorileri inceleyebilirsiniz.</p><br>
+
+        @if (categories != null && categories.Any())
+        {
+            @foreach (var category in categories)
+            {
+                var categoryProducts = products.Where(p => p.CategoryId == category.Id).ToList();
+
+                <div class="w3-third w3-margin-bottom">
+                    <ul class="w3-ul w3-border w3-hover-shadow">
+                        <li class="w3-theme">
+                            <p class="w3-xlarge">@category.Name</p>
+                        </li>
+                        <li class="w3-padding-16" style="text-align:center;">
+                            <img src="~/Image.Slider/2.png" alt="@category.Name" />
+                        </li>
+                        <li class="w3-theme-l5 w3-padding-24">
+                            <a asp-action="CategoryProducts" asp-controller="Home" asp-route-id="@category.Id" class="w3-button w3-teal w3-padding-large">
+                                <i class="fa fa-check"></i> İncele
+                            </a>
+                        </li>
+                    </ul>
+
+                    @if (categoryProducts.Any())
+                    {
+                        <div class="product-list">
+                            @foreach (var product in categoryProducts)
+                            {
+                                <div class="card p-4 border-light shadow-sm">
+                                    <img src="~/Images.Products/@product.Image" class="img-fluid rounded" alt="Ürün Resmi" style="max-height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@product.Name</h5>
+                                        <p class="card-text">Açıklama: @product.Description</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Bu kategoriye ait ürün bulunamamıştır.</p>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <p>Kategori bulunmamaktadır.</p>
+        }
+    </div>
+
+    <div class="posts-section">
+        <h2>Haberler</h2>
+        <div class="row">
+            @if (posts != null && posts.Any())
+            {
+                @foreach (var item in posts)
+                {
+                    @if (item.IsPublished == true)
+                    {
+                        <div class="col-md-4 mb-4 post-card">
+                            <div class="card p-4 border-light shadow-sm">
+                                <img src="~/Images.Posts/@item.Image" class="img-fluid rounded" alt="Post Resmi" style="max-height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.Title</h5>
+                                    <p class="card-text">Açıklama: @item.Info</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <p>Yayınlanmış haber bulunmamaktadır.</p>
+            }
+        </div>
+    </div>
+
+    <script>
+        let slider = document.getElementById('slider');
+        let slides = slider.children;
+        let index = 0;
+
+        function nextSlide() {
+            index = (index + 1) % slides.length;
+            slider.scrollTo({
+                left: slider.offsetWidth * index,
+                behavior: 'smooth'
+            });
+        }
+
+        function prevSlide() {
+            index = (index - 1 + slides.length) % slides.length;
+            slider.scrollTo({
+                left: slider.offsetWidth * index,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>

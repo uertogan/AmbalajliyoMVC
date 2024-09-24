@@ -1,0 +1,92 @@
+﻿@{
+    var userAdmin = Context.Session.GetString("UserAdmin");
+    var userId = Context.Session.GetString("UserId");
+}
+<div class="sidebar" data-background-color="dark">
+    <div class="sidebar-logo">
+        <!-- Logo Header -->
+        <br /><br />
+        <div class="logo-header" data-background-color="dark">
+            <div>
+                <img src="~/Images.Products/2.png" alt="Banner Image" class="banner-image">
+            </div>
+
+            <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar">
+                    <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                    <i class="gg-menu-left"></i>
+                </button>
+            </div>
+            <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+            </button>
+
+        </div>
+
+        <!-- End Logo Header -->
+    </div>
+
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+
+                <li class="nav-item">
+                    <a asp-action="GetUserById" asp-controller="IcerikYoneticisiUser" asp-route-id="@userId">
+                        <i class="bi bi-person-bounding-box"></i>
+                        <p>Profil</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllCategory", "IcerikYoneticisiCategory")">
+                        <i class="bi bi-list-stars"></i>
+                        <p>Kategoriler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllProduct", "IcerikYoneticisiProduct")">
+                        <i class="bi bi-list-columns"></i>
+                        <p>Ürünler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllPost","IcerikYoneticisiPost")">
+                        <i class="bi bi-newspaper"></i>
+                        <p>Haberler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllCatalog","IcerikYoneticisiCatalog")">
+                        <i class="bi bi-file-earmark-richtext-fill"></i>
+                        <p>Kataloglar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" style="cursor:pointer;">
+                        <i class="bi bi-box-arrow-left"></i>
+                        <p>Çıkış Yap</p>
+                    </a>
+                    <form id="logout-form" asp-action="Logout" asp-controller="IcerikYoneticisiUser" method="post" style="display:none;">
+                        <!-- Gizli form -->
+                    </form>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+<style>
+    .image-container {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .banner-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 100%;
+    }
+</style>

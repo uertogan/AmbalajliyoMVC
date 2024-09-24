@@ -1,0 +1,73 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model UserViewModel
+
+@{
+    ViewData["Title"] = "UpdateUser";
+    
+}
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Personel</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="GetUserById" asp-controller="IcerikYoneticisiUser" asp-route-id="@Model.Id">Personel Detayları</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Personel Bilgilerini Güncelle</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <form asp-action="UpdateUser" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="AmbalajliyoRoleId" value="@Model.AmbalajliyoRoleId" />
+                    <input type="hidden" asp-for="PasswordHash" value="@Model.PasswordHash" />
+                    <input type="hidden" asp-for="UserName" value="@Model.UserName" />
+
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Ad</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Surname" class="control-label">Soyad</label>
+                        <input asp-for="Surname" class="form-control" />
+                        <span asp-validation-for="Surname" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label">E-mail</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NewPassword" class="control-label">Yeni Şifre <i>(*opsiyonel)</i></label>
+                        <input asp-for="NewPassword" type="password" class="form-control" placeholder="Yeni şifrenizi girin" />
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Güncelle" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

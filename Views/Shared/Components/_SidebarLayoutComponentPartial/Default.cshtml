@@ -1,0 +1,101 @@
+﻿@{
+    var userAdmin = Context.Session.GetString("UserAdmin");
+    var userId = Context.Session.GetString("UserId");
+}
+<div class="sidebar" data-background-color="dark">
+    <div class="sidebar-logo">
+        <!-- Logo Header -->
+        <div class="logo-header" data-background-color="dark">
+
+            <a href="../index.html" class="logo">
+                <img src="/kaiadmin-lite-1.2.0/assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20">
+            </a>
+            <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar">
+                    <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                    <i class="gg-menu-left"></i>
+                </button>
+            </div>
+            <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+            </button>
+        </div>
+        <!-- End Logo Header -->
+    </div>
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+                @if (userAdmin != null)
+                {
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index", "User")">
+                            <i class="bi bi-people-fill"></i>
+                            <p>Personeller</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index", "Role")">
+                            <i class="bi bi-person-walking"></i>
+                            <p>Roller</p>
+                        </a>
+                    </li>
+                }
+                <li class="nav-item">
+                    <a asp-action="GetUserById" asp-controller="User" asp-route-id="@userId">
+                        <i class="bi bi-person-bounding-box"></i>
+                        <p>Profil</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllCategory", "Category")">
+                        <i class="bi bi-list-stars"></i>
+                        <p>Kategoriler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllProduct", "Product")">
+                        <i class="bi bi-list-columns"></i>
+                        <p>Ürünler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllSiparis", "Customer")">
+                        <i class="bi bi-clipboard2-heart-fill"></i>
+                        <p>Siparişler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllIades","Customer")">
+                        <i class="bi bi-arrow-through-heart-fill"></i>
+                        <p>İadeler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllLog","User")">
+                        <i class="bi bi-clipboard-data"></i>
+                        <p>Sistem Kayıtları</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("GetAllPost","Post")">
+                        <i class="bi bi-newspaper"></i>
+                        <p>Haberler</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" style="cursor:pointer;">
+                        <i class="bi bi-box-arrow-left"></i>
+                        <p>Çıkış Yap</p>
+                    </a>
+                    <form id="logout-form" asp-action="Logout" asp-controller="User" method="post" style="display:none;">
+                        <!-- Gizli form -->
+                    </form>
+                </li>
+
+
+            </ul>
+        </div>
+    </div>
+</div>

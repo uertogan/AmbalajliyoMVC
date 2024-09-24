@@ -1,0 +1,45 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model List<ProductViewModel>
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+}
+<div class="row">
+    @foreach (var item in Model)
+    {
+        
+        
+            <div class="col-md-6 mb-4">
+                <div class="card p-4" style="background-color:ivory; border-block-color:black; border-radius:24px; text-align:center;">
+                    <div class="row g-0">
+                        <div class="col-md-5">
+                            <img src="~/Images.Products/@item.Image" class="img-fluid rounded-start" alt="..." style="max-height: 250px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Name</h5>
+                                <p class="card-text">Açıklama: @item.Description</p>
+                                @{
+                                    foreach (var category in categories)
+                                    {
+                                        if (category.Id == item.CategoryId)
+                                        {
+                                            <p class="card-text">Kategori: @category.Name</p>
+                                        }
+                                    }
+                                }
+
+                                <p class="card-text">@item.Price ₺</p>
+
+                                <a asp-controller="Customer" asp-action="İade" asp-route-id="@item.Id">İade</a> |
+                                <a asp-controller="Customer" asp-action="Siparis" asp-route-id="@item.Id">Sipariş</a> |
+                                <a asp-controller="Customer" asp-action="Sikayet" asp-route-id="@item.Id">Şikayet</a> |
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+      
+    }
+</div>

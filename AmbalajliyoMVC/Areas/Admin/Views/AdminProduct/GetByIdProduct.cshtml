@@ -1,0 +1,85 @@
+﻿@using AmbalajliyoMVC.Helper
+@using AmbalajliyoMVC.ViewModels
+@model ProductViewModel
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+    var categoryName = categories?.FirstOrDefault(c => c.Id == Model.CategoryId)?.Name ?? "Kategori bulunamadı";
+}
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Ürünler</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href=" @Url.Action("GetAllProduct")">Ürün Listesi</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Ürün Detayları</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <h4>Ürün Detayları</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    Ürün Adı
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    Açıklama
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+                <dt class="col-sm-2">
+                    Fiyat
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Price)
+                </dd>
+                <dt class="col-sm-2">
+                    Resim
+                </dt>
+                <dd class="col-sm-10">
+                    <img src="~/Images.Products/@Model.Image" class="img-fluid rounded-start" alt="Product Image">
+
+                </dd>
+                <dt class="col-sm-2">
+                    Kategori
+                </dt>
+                <dd class="col-sm-10">
+                    @{
+                        foreach (var category in categories)
+                        {
+                            if (category.Id == Model.CategoryId)
+                            {
+                                <p class="card-text">@category.Name</p>
+                            }
+                        }
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <a asp-action="UpdateProduct" asp-route-id="@Model.Id">Güncelle</a> |
+            <a asp-action="GetAllProduct">Listeye geri dön</a>
+
+        </div>
+    </div>
+</div>

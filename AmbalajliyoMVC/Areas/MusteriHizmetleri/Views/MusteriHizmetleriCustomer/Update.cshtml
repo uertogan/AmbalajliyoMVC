@@ -1,0 +1,105 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model CustomerViewModel
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header mb-4">
+            <h3 class="fw-bold">Cevap</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Cevap</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Cevap Bilgileri</a>
+                </li>
+            </ul>
+        </div>
+        <div class="container">
+            <form asp-action="Update" asp-controller="MusteriHizmetleriCustomer" method="post">
+                <!-- Hidden inputs for non-editable properties -->
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Title" />
+                <input type="hidden" asp-for="Surname" />
+                <input type="hidden" asp-for="DeletedDate" />
+                <input type="hidden" asp-for="ProductId" />
+                <input type="hidden" asp-for="Product" />
+                <input type="hidden" asp-for="Email" />
+
+                <!-- Read-only fields -->
+                <div class="form-group">
+                    <label for="Name">Müşteri Adı</label>
+                    <input asp-for="Name" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">E-posta</label>
+                    <p>
+                        <a href="mailto:@Model.Email?subject=Müşteri%20Desteği&body=Sayın%20@(Model.Name),%0D%0A%0D%0A"
+                           class="form-control"
+                           style="border:none; background:none; padding-left:0; color:blue;">
+                            @Model.Email
+                        </a>
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="Address">Adres</label>
+                    <input asp-for="Address" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="City">Şehir</label>
+                    <input asp-for="City" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="Message">Mesaj</label>
+                    <textarea asp-for="Message" class="form-control" readonly></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="CreatedDate">Oluşturulma Tarihi</label>
+                    <input asp-for="CreatedDate" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="ModifiedDate">Cevap Tarihi</label>
+                    <input asp-for="ModifiedDate" class="form-control" readonly />
+                </div>
+
+                <!-- Conditional submit button -->
+                @if (!Model.IsItAnswered)
+                {
+                    <button type="submit" class="btn btn-success mt-3">Cevap Verildi</button>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for form alignment -->
+<style>
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+    }
+
+    .btn {
+        margin-top: 1rem;
+    }
+</style>

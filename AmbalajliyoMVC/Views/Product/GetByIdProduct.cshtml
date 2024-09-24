@@ -1,0 +1,71 @@
+﻿@using AmbalajliyoMVC.Helper
+@using AmbalajliyoMVC.ViewModels
+@model ProductViewModel
+
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+    var categoryName = categories?.FirstOrDefault(c => c.Id == Model.CategoryId)?.Name ?? "Kategori bulunamadı";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="~/Images.Products/@Model.Image" class="img-fluid rounded" alt="Ürün Resmi">
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.Name</h2>
+            <p class="text-muted">@categoryName</p>
+            <p class="lead">@Model.Description</p>
+            <h3 class="text-danger">@Model.Price ₺</h3>
+            <div class="mt-4">
+                <a class="btn btn-primary" asp-controller="Customer" asp-action="Siparis" asp-route-id="@Model.Id">Sipariş Ver</a>
+                <a class="btn btn-outline-secondary" asp-action="FilterProductsByCategory" asp-route-categoryId="@Model.CategoryId">Listeye geri dön</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .container {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .img-fluid {
+        border-radius: 15px;
+    }
+
+    .btn {
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+    .lead {
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+
+</style>

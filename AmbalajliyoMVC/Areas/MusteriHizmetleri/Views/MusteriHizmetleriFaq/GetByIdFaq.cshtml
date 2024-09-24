@@ -1,0 +1,46 @@
+﻿@using AmbalajliyoMVC.ViewModels
+@model FaqViewModel
+
+<div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Sıkça Sorulan Sorular</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href=" @Url.Action("GetAllFaq")">Sıkça Sorulan Sorular Listesi</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">SSS Detay</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h4>Sıkça Sorulan Sorular</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">Soru</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.Question)</dd>
+            </dl>
+            <dl class="row">
+                <dt class="col-sm-2">Cevap</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.Answer)</dd>
+            </dl>
+        </div>    
+
+        <div>
+            <a asp-action="UpdateFaq" asp-route-id="@Model?.Id">Güncelle</a> |
+            <a asp-action="GetAllFaq">Listeye geri dön</a>
+        </div>
+    </div>
+</div>
